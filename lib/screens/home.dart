@@ -61,13 +61,13 @@ class _HomeState extends State<Home> {
                         RichText(
                           text: TextSpan(
                             text: "Vx",
-                            style: textTheme.headline1,
+                            style: textTheme.headlineLarge,
                             children: [
                               TextSpan(
-							  text: "C",
-                                 style: textTheme.headline1?.copyWith(
+                                text: "C",
+                                style: textTheme.headlineLarge?.copyWith(
                                   color: Colors.pink,
-                         fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
                             text: "Compras por catalogo en un ",
                             style: TextStyle(
                               color: Color.fromARGB(186, 0, 0, 0),
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
                             children: [
@@ -155,7 +155,7 @@ class _HomeState extends State<Home> {
                   child: Container(
                     margin: const EdgeInsets.only(top: 10),
                     width: size.width,
-                    height: size.height * 0.45,
+                    height: size.height * 0.40,
                     child: PageView.builder(
                       controller: _pageController,
                       itemCount: mainList.length,
@@ -311,7 +311,7 @@ class _HomeState extends State<Home> {
             tag: data.id,
             child: Container(
               width: size.width * 0.6,
-              height: size.height * 0.32,
+              height: size.height * 0.30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(3),
                 image: DecorationImage(
@@ -331,15 +331,15 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.only(top: 10.0),
             child: Text(
               data.name,
-              style: theme.headline2,
+              style: theme.headlineSmall,
             ),
           ),
           RichText(
             text: TextSpan(
               text: String.fromCharCode(36), //"peso",
-              style: theme.subtitle2?.copyWith(
+              style: theme.headlineMedium?.copyWith(
                 color: primaryColor,
-                fontSize: 26,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
               children: [

@@ -105,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         _emailController.text.trim(),
                         _passwordController.text.trim(),
                         vendedor);
-                    vendedor == false;
-                        //await getUsuarioVendedor(_emailController.text.trim());
+                    vendedor ==
+                        await getUsuarioVendedor(_emailController.text.trim());
 
                     if (FirebaseAuth.instance.currentUser != null) {
                       if (!mounted) return;
