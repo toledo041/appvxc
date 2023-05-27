@@ -75,17 +75,12 @@ class _HomeState extends State<Home> {
                         ),
                         RichText(
                           text: const TextSpan(
-                            text: "Compras por catalogo en un ",
+                            text: "Compras por catalogo en un click",
                             style: TextStyle(
                               color: Color.fromARGB(186, 0, 0, 0),
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w400,
                             ),
-                            children: [
-                              TextSpan(
-                                text: "click ",
-                              ),
-                            ],
                           ),
                         ),
                       ],
@@ -99,7 +94,7 @@ class _HomeState extends State<Home> {
                   child: Container(
                       margin: const EdgeInsets.only(top: 7),
                       width: size.width,
-                      height: size.height * 0.18,
+                      height: size.height * 0.17,
                       child: Expanded(
                         child: ListView.builder(
                             physics: const BouncingScrollPhysics(),
@@ -117,8 +112,6 @@ class _HomeState extends State<Home> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            //do what you want here
-                                            print("Marca ${current.title}");
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -155,7 +148,7 @@ class _HomeState extends State<Home> {
                   child: Container(
                     margin: const EdgeInsets.only(top: 10),
                     width: size.width,
-                    height: size.height * 0.40,
+                    height: size.height * 0.36,
                     child: PageView.builder(
                       controller: _pageController,
                       itemCount: mainList.length,
@@ -182,14 +175,14 @@ class _HomeState extends State<Home> {
                 /// Most Popular Text
                 FadeInUp(
                   delay: const Duration(milliseconds: 650),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 5.0),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Mas Popular", style: TextStyle(fontSize: 14)),
-                        Text("Ver todo", style: TextStyle(fontSize: 14)),
+                        //Text("Ver todo", style: TextStyle(fontSize: 14)),
                       ],
                     ),
                   ),
@@ -201,13 +194,14 @@ class _HomeState extends State<Home> {
                   child: Container(
                     margin: const EdgeInsets.only(top: 10.0),
                     width: size.width,
-                    height: size.height * 0.44,
+                    height: size.height * 0.5, //0.44
                     child: GridView.builder(
                         physics: const BouncingScrollPhysics(),
                         itemCount: mainList.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2, childAspectRatio: 0.63),
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.63), //0.63
                         itemBuilder: (context, index) {
                           BaseModel current = mainList[index];
                           return GestureDetector(
@@ -227,8 +221,8 @@ class _HomeState extends State<Home> {
                               child: Column(
                                 children: [
                                   Container(
-                                    width: size.width * 0.5,
-                                    height: size.height * 0.3,
+                                    width: size.width * 0.45,
+                                    height: size.height * 0.2,
                                     margin: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
@@ -249,23 +243,26 @@ class _HomeState extends State<Home> {
                                     padding: const EdgeInsets.only(top: 2.0),
                                     child: Text(
                                       current.name,
-                                      style: textTheme.headline2,
+                                      style: textTheme.bodyMedium,
                                     ),
                                   ),
                                   RichText(
                                       text: TextSpan(
                                           text:
-                                              String.fromCharCode(36), //"peso",
-                                          style: textTheme.subtitle2?.copyWith(
+                                              "${String.fromCharCode(36)} ", //"peso",
+                                          style:
+                                              textTheme.headlineSmall?.copyWith(
                                             color: primaryColor,
-                                            fontSize: 20,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
                                           children: [
                                         TextSpan(
                                           text: current.price.toString(),
-                                          style: textTheme.subtitle2?.copyWith(
+                                          style:
+                                              textTheme.headlineSmall?.copyWith(
                                             fontWeight: FontWeight.bold,
+                                            fontSize: 14,
                                           ),
                                         )
                                       ])),
@@ -310,8 +307,8 @@ class _HomeState extends State<Home> {
           Hero(
             tag: data.id,
             child: Container(
-              width: size.width * 0.6,
-              height: size.height * 0.30,
+              width: size.width * 0.42,
+              height: size.height * 0.22,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(3),
                 image: DecorationImage(
@@ -331,22 +328,22 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.only(top: 10.0),
             child: Text(
               data.name,
-              style: theme.headlineSmall,
+              style: theme.bodyLarge,
             ),
           ),
           RichText(
             text: TextSpan(
-              text: String.fromCharCode(36), //"peso",
-              style: theme.headlineMedium?.copyWith(
+              text: "${String.fromCharCode(36)} ", //"peso",
+              style: theme.headlineSmall?.copyWith(
                 color: primaryColor,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
               children: [
                 TextSpan(
                   text: data.price.toString(),
-                  style: theme.subtitle2
-                      ?.copyWith(fontWeight: FontWeight.w600, fontSize: 25),
+                  style: theme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w600, fontSize: 20),
                 )
               ],
             ),

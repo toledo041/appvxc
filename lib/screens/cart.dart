@@ -1,4 +1,4 @@
-import 'dart:ffi';
+//import 'dart:ffi';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
@@ -102,7 +102,7 @@ class _CartState extends State<Cart> {
     List carrito = await getCarritoUsuario(correo.toString());
     //Se llena la información obtenida con el modelo de la aplicación
     int index = 0;
-    carrito.forEach((element) {
+    for (var element in carrito) {
       BaseModel model = BaseModel(
           id: index,
           imageUrl: "imageUrl",
@@ -114,7 +114,7 @@ class _CartState extends State<Cart> {
           uid: element["uid"]);
       itemsOnCart.add(model);
       index++;
-    });
+    }
   }
 
   @override
@@ -140,14 +140,6 @@ class _CartState extends State<Cart> {
                         SizedBox(
                           height: size.height * 0.04,
                         ),
-                        /*FadeInUp(
-                          delay: const Duration(milliseconds: 200),
-                          child: const Image(
-                            image: AssetImage("assets/images/empty.png"),
-                            fit: BoxFit.fill,
-                            height: size.height * 0.23,
-                          ),
-                        ),*/
                         SizedBox(
                           height: size.height * 0.01,
                         ),
@@ -195,23 +187,6 @@ class _CartState extends State<Cart> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                /*Container(
-                                  margin: const EdgeInsets.all(5.0),
-                                  decoration: BoxDecoration(
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        offset: Offset(0, 4),
-                                        blurRadius: 4,
-                                        color: Color.fromARGB(61, 0, 0, 0),
-                                      )
-                                    ],
-                                    color: Colors.pink,
-                                    image: DecorationImage(
-                                        image: AssetImage(current.imageUrl),
-                                        fit: BoxFit.cover),
-                                  ),
-                                  width: size.width * 0.4,
-                                ),*/
                                 SizedBox(
                                   height: size.height * 0.01,
                                 ),
@@ -306,8 +281,7 @@ class _CartState extends State<Cart> {
                                                       current.value = 1;
                                                     }
                                                   });
-                                                  print(
-                                                      "uid elemento ${current.uid} cant: ${current.value}");
+
                                                   await actualizaCantCarritoUsuario(
                                                       current.uid,
                                                       current.value);
@@ -352,8 +326,7 @@ class _CartState extends State<Cart> {
                                                         ? current.value++
                                                         : null;
                                                   });
-                                                  print(
-                                                      "uid elemento ${current.uid} cant: ${current.value}");
+
                                                   await actualizaCantCarritoUsuario(
                                                       current.uid,
                                                       current.value);
@@ -410,13 +383,6 @@ class _CartState extends State<Cart> {
                       SizedBox(
                         height: size.height * 0.01,
                       ),
-                      /*FadeInUp(
-                        delay: const Duration(milliseconds: 400),
-                        child: ReuseableRowForCart(
-                          price: calculateSubTotalPrice().toDouble(),
-                          text: 'Sub Total',
-                        ),
-                      ),*/
                       FadeInUp(
                         delay: const Duration(milliseconds: 450),
                         child: ReuseableRowForCart(

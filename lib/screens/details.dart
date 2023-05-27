@@ -45,7 +45,7 @@ class _DetailsState extends State<Details> {
             ///Top Image
             SizedBox(
               width: size.width,
-              height: size.height * 0.5,
+              height: size.height * 0.4,
               child: Stack(
                 children: [
                   Hero(
@@ -94,7 +94,8 @@ class _DetailsState extends State<Details> {
                         children: [
                           Text(
                             current.name,
-                            style: textTheme.headline3?.copyWith(fontSize: 22),
+                            style:
+                                textTheme.headlineSmall?.copyWith(fontSize: 20),
                           ),
                           ReuseableText(
                             price: current.price,
@@ -114,12 +115,12 @@ class _DetailsState extends State<Details> {
                             width: 5,
                           ),
                           Text(current.star.toString(),
-                              style: textTheme.headline5),
+                              style: textTheme.headlineSmall),
                           const SizedBox(
                             width: 8,
                           ),
                           Text("(${current.review.toString()}K+ review)",
-                              style: textTheme.headline5
+                              style: textTheme.headlineSmall
                                   ?.copyWith(color: Colors.grey)),
                           const SizedBox(
                             width: 5,
@@ -145,7 +146,7 @@ class _DetailsState extends State<Details> {
                     const EdgeInsets.only(left: 10.0, top: 18.0, bottom: 10.0),
                 child: Text(
                   "Seleccionar Talla ",
-                  style: textTheme.headline3,
+                  style: textTheme.headlineSmall,
                 ),
               ),
             ),
@@ -207,7 +208,7 @@ class _DetailsState extends State<Details> {
                     const EdgeInsets.only(left: 10.0, top: 18.0, bottom: 10.0),
                 child: Text(
                   "Seleccionar Color",
-                  style: textTheme.headline3,
+                  style: textTheme.headlineSmall,
                 ),
               ),
             ),

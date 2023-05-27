@@ -2,8 +2,6 @@ import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:fashion_ecommerce_app/widgets/customized_textfield.dart';
 import 'package:fashion_ecommerce_app/widgets/user_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../screens/welcome_screen.dart';
 import '../../widgets/customized_button.dart';
 import 'package:flutter/material.dart';
 

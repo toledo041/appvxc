@@ -29,6 +29,7 @@ dependencies:
   google_fonts: ^4.0.4
   google_sign_in: ^6.1.0
   cell_calendar: ^0.8.0
+  intl: ^0.18.1
   
 
 dev_dependencies:

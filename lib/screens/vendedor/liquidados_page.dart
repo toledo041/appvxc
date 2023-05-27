@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:fashion_ecommerce_app/screens/vendedor/detalles.dart';
 
 enum SampleItem { deudores, liquidados, otros }
 
@@ -35,14 +33,14 @@ class _LiquidadosPageState extends State<LiquidadosPage> {
                   color: Colors.green,
                 ),
                 onTap: () {
-                  Navigator.push(
+                  /*Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const DetalleVenta()),
-                  );
+                  );*/
                 },
               ),
-              const Divider(height: 0),
+              const Divider(height: 1),
               ListTile(
                 leading: const CircleAvatar(child: Text('K')),
                 title: const Text('Karen Gomez'),
@@ -52,10 +50,10 @@ class _LiquidadosPageState extends State<LiquidadosPage> {
                   color: Colors.green,
                 ),
                 onTap: () {
-                  Navigator.push(
+                  /*Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DetalleVenta()),
-                  );
+                  );*/
                 },
               ),
               const Divider(height: 0),
@@ -82,10 +80,10 @@ class _LiquidadosPageState extends State<LiquidadosPage> {
           if (selectedMenu != null) {
             print(selectedMenu?.index);
             if (selectedMenu?.index == 0) {
-              Navigator.push(
+              /*Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const DetalleVenta()),
-              );
+              );*/
             } else if (selectedMenu?.index == 1) {
               print("Liquidados!!");
               /*Navigator.push(

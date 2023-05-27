@@ -4,6 +4,7 @@ class VendedorModel {
   double deuda;
   final double abono; //
   final String uid;
+  String marcas;
   List carrito = [];
 
   VendedorModel(
@@ -12,5 +13,19 @@ class VendedorModel {
       this.deuda = 0,
       required this.abono,
       required this.uid,
-      required this.carrito});
+      required this.carrito,
+      this.marcas = ""});
+}
+
+class ProductoModel {
+  String marca;
+  String codigo;
+  String precio;
+  String tamano;
+
+  ProductoModel(
+      {required this.marca,
+      required this.codigo,
+      required this.precio,
+      this.tamano = ""});
 }

@@ -12,6 +12,20 @@ class AgendaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final meses = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre"
+    ];
     final events = sampleEvents();
     final cellCalendarPageController = CellCalendarPageController();
     return Scaffold(
@@ -22,7 +36,7 @@ class AgendaPage extends StatelessWidget {
         cellCalendarPageController: cellCalendarPageController,
         events: events,
         daysOfTheWeekBuilder: (dayIndex) {
-          final labels = ["S", "M", "T", "W", "T", "F", "S"];
+          final labels = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sab"];
           return Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
@@ -36,7 +50,7 @@ class AgendaPage extends StatelessWidget {
         },
         monthYearLabelBuilder: (datetime) {
           final year = datetime!.year.toString();
-          final month = datetime.month.monthName;
+          final month = meses[datetime.month - 1];
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Row(
@@ -75,7 +89,14 @@ class AgendaPage extends StatelessWidget {
           showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: Text("${date.month.monthName} ${date.day}"),
+                    title: Text("${meses[date.month - 1]} ${date.day}"),
+                    actions: [
+                      IconButton(
+                          onPressed: (() {
+                            //Navigator.pop(context);
+                          }),
+                          icon: const Icon(Icons.close))
+                    ],
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: eventsOnTheDate

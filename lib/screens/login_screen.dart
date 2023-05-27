@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         _emailController.text.trim(),
                         _passwordController.text.trim(),
                         vendedor);
-                    vendedor ==
+                    vendedor =
                         await getUsuarioVendedor(_emailController.text.trim());
 
                     if (FirebaseAuth.instance.currentUser != null) {
@@ -117,29 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? const VendedorPage()
                                   : const MainWrapper()))); //HomeScreen
                     }
-
-                    //  This code is gone inside the catch block
-                    // which is executed only when we have firebaseexception
-                    //  else {
-                    //   showDialog(
-                    //       context: context,
-                    //       builder: (context) => AlertDialog(
-                    //               title: Text(
-                    //                   " Usuario o contraseña invalido. Regístrese de nuevo o asegúrese de que el nombre de usuario y la contraseña sean correctos"),
-                    //               actions: [
-                    //                 ElevatedButton(
-                    //                   child: Text("Registrate Ahora"),
-                    //                   onPressed: () {
-                    //                     Navigator.push(
-                    //                         context,
-                    //                         MaterialPageRoute(
-                    //                             builder: (context) =>
-                    //                                 SignUpScreen()));
-                    //                   },
-                    //                 )
-                    //               ]));
-
-                    // }
                   } on FirebaseException catch (e) {
                     debugPrint("el error es ${e.message}");
 

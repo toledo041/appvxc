@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
 
@@ -83,13 +81,15 @@ Future<bool> getUsuarioVendedor(String correo) async {
   //el get se trae todo lo que hay en la colección falta filtrar
   QuerySnapshot queryPeople =
       await collectionReferencePeople.where("email", isEqualTo: correo).get();
-
-  queryPeople.docs.forEach((dcumento) {
+  print("Tipo usuario ${queryPeople.docs}");
+  for (var dcumento in queryPeople.docs) {
     //Se mapea como el tipo de dato que se obtiene una llave cadena y valores cualquiera
     final Map<String, dynamic> data = dcumento.data() as Map<String, dynamic>;
-    esVendedor = data["es_vendedor"];
-  });
-  //print("es vendedor ${esVendedor}");
+    print(data);
+    esVendedor = data["es_vendedor"]; // == "true" ? true : false;
+  }
+
+  print("== es vendedor ${esVendedor}");
 
   return esVendedor;
 }
@@ -317,4 +317,79 @@ Future<List> getTotalCarritoUsuario() async {
   print("deuda calculada ${res}");
 
   return res;
+}
+
+///Se obtienen los productos filtrados por la marca
+Future<List<ProductoModel>> getCatalogoProductos(String marca) async {
+//catalogo_productos
+  /*await db
+      .collection('catalogo_productos')
+      .doc("tRkJfTBiNSDuR693YySc")
+      .delete();*/
+
+  List<ProductoModel> res = [];
+  //Se buscara el carrito por usuario y se calculara su deuda y abono
+  CollectionReference collectionReferenceCarrito =
+      db.collection("catalogo_productos");
+
+  //el get se trae todo lo que hay en la colección falta filtrar
+  QuerySnapshot queryCatalogo = await collectionReferenceCarrito
+      .where("marca", isEqualTo: marca)
+      //.orderBy("codigo")
+      .get();
+
+  for (var catalogo in queryCatalogo.docs) {
+    final Map<String, dynamic> elm = catalogo.data() as Map<String, dynamic>;
+    print("elemento catalogo:  ${elm} uid: ${catalogo.id}");
+
+    ProductoModel producto = ProductoModel(
+        marca: elm["marca"],
+        codigo: elm["codigo"],
+        precio: elm["precio"].toString(), //double.parse(precio),
+        tamano: (elm["tamaño"] == null ? "" : elm["tamaño"]));
+    //{marca: shelo, precio: 179, codigo: S146, tamaño: 250ml}
+
+    res.add(producto);
+  }
+
+  //
+
+  return res;
+}
+
+//TODO FALTA POR TERMINAR
+Future getPagos() async {
+  List res = [];
+  //Se buscara el carrito por usuario y se calculara su deuda y abono
+  CollectionReference collectionReferenceCarrito =
+      db.collection("pagos_usuario");
+
+  //el get se trae todo lo que hay en la colección falta filtrar
+  QuerySnapshot queryCarrito = await collectionReferenceCarrito
+      //.where("carrito_usuario")
+      //.where("correo", isEqualTo: correo)
+      .get();
+
+  for (var carrito in queryCarrito.docs) {
+    final Map<String, dynamic> cart = carrito.data() as Map<String, dynamic>;
+    print(cart);
+    /*final calculado = {
+      "cantidad": cart["cantidad"],
+      "codigo": cart["codigo"],
+      "correo": cart["correo"],
+      "marca": cart["marca"],
+      "precio": cart["precio"],
+      "tamano": cart["tamano"],
+    };
+
+    res.add(calculado);*/
+  }
+  /*queryCarrito.docs.forEach((carrito) {
+      //Se mapea como el tipo de dato que se obtiene una llave cadena y valores cualquiera
+      final Map<String, dynamic> cart = carrito.data() as Map<String, dynamic>;
+      deuda += (cart["cantidad"] * cart["precio"]);
+    });*/
+  //print("deuda calculada ${res}");
+
+  //return res;
 }

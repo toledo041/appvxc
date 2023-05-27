@@ -16,7 +16,7 @@ class DeudorDialog extends Dialog {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Center(
                       child: Text(

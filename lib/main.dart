@@ -1,6 +1,3 @@
-import 'package:fashion_ecommerce_app/screens/home.dart';
-import 'package:fashion_ecommerce_app/services/firebase_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_options.dart';
 import '../screens/home_screen.dart';
 import '../screens/welcome_screen.dart';
@@ -46,9 +43,9 @@ class _ComerceAppPageState extends State<ComerceApp> {
           //future: Future<bool> getUsuarioVendedor(correo),
           builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data?.email);
+          //print(snapshot.data?.email);
           if (snapshot.data?.email != null) {
-            String? email = snapshot.data?.email;
+            //String? email = snapshot.data?.email;
             //bool vendedor = await getUsuarioVendedor(email);
           }
 

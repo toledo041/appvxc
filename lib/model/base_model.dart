@@ -8,6 +8,7 @@ class BaseModel {
   int value;
   final String talla;
   final String uid;
+  String marcaMin;
 
   BaseModel(
       {required this.id,
@@ -18,5 +19,6 @@ class BaseModel {
       this.star = 0.0,
       this.value = 0,
       this.talla = "",
-      this.uid = ""});
+      this.uid = "",
+      this.marcaMin = ""});
 }

@@ -1,5 +1,4 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:bottom_bar_matu/bottom_bar_matu.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -16,7 +15,6 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
-  final int _index = 0;
   bool isSearchActive = false;
 
   List<Widget> screens = [
@@ -110,7 +108,7 @@ class _MainWrapperState extends State<MainWrapper> {
           // through the options in the drawer if there isn't enough vertical
           // space to fit everything.
           child: ListViewUserMenu()),
-      bottomNavigationBar: BottomBarBubble(
+      /*bottomNavigationBar: BottomBarBubble(
         color: Colors.white,
         selectedIndex: _index,
         items: [
@@ -121,7 +119,7 @@ class _MainWrapperState extends State<MainWrapper> {
           BottomBarItem(iconData: Icons.mail),
         ],
         onSelect: (index) {},
-      ),
+      ),*/
     );
   }
 }

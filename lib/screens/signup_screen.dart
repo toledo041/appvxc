@@ -23,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  bool vendedor = true;
+  bool vendedor = false;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       // This is called when the user toggles the switch.
                       setState(() {
                         vendedor = value;
+                        print("vendedor: ${vendedor}");
                       });
                     },
                   ),
@@ -108,11 +109,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 textColor: Colors.white,
                 onPressed: () async {
                   try {
+                    print(
+                        "user:${_usernameController.text}email:${_emailController.text.trim()}es vendedor:${vendedor}");
+
                     await FirebaseAuthService().signup(
                       _emailController.text.trim(),
                       _passwordController.text.trim(),
                     );
-					print( "user:${_usernameController.text}email:${_emailController.text.trim()}es vendedor:${vendedor}");
+
                     await addTipoUsuario(_emailController.text.trim(), vendedor,
                         _usernameController.text);
 

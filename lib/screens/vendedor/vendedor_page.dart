@@ -1,3 +1,7 @@
+//import 'dart:js_util';
+
+import 'package:bottom_bar_matu/components/colors.dart';
+import 'package:fashion_ecommerce_app/main_wrapper.dart';
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
 import 'package:fashion_ecommerce_app/screens/welcome_screen.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
@@ -9,7 +13,7 @@ import 'package:fashion_ecommerce_app/screens/vendedor/detalles.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/deudor_dialog.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/liquidados_page.dart';
 
-enum SampleItem { deudores, liquidados, agenda, salir }
+enum SampleItem { deudores, liquidados, agenda, comprar, salir }
 
 class VendedorPage extends StatelessWidget {
   const VendedorPage({super.key});
@@ -20,7 +24,7 @@ class VendedorPage extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.blueGrey, //
       ),
       home: const HomePageVendedor(title: 'Vendedor'),
     );
@@ -58,17 +62,26 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
       await getVentas();
       await getCarritoAll();
 
+      await getPagos();
+
       for (var usuario in itemsOnVendor) {
         double deuda = 0.0;
         List listaElm = [];
+        String marcas = "";
         for (var carrito in carritos) {
           if (usuario.correo == carrito["correo"]) {
             deuda += (carrito["cantidad"] * carrito["precio"]);
             listaElm.add(carrito);
+            if (!marcas.contains(carrito["marca"])) {
+              marcas += carrito["marca"] + " ";
+            }
           }
+
           usuario.deuda = double.parse((deuda).toStringAsFixed(2));
           usuario.carrito = listaElm;
         }
+        //print("marcas: ${marcas}");
+        usuario.marcas = marcas;
       }
 
       setState(() {
@@ -152,41 +165,54 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     var current = itemsOnVendor[index];
-                    return FadeInUp(
-                        delay: Duration(milliseconds: 100 * index + 80),
-                        child: Container(
-                          margin: const EdgeInsets.all(5.0),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.10,
-                          child: ListTile(
-                            leading: CircleAvatar(
-                                child: Text(
-                                    current.nombre.substring(0, 1).toString())),
-                            title: Text(current.nombre),
-                            subtitle: const Text('Supporting text'),
-                            trailing: Text(
-                              "\u0024 ${current.deuda}",
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DetalleVenta()),
-                              );
-                            },
-                          ),
-                        ));
+                    //Si no ha comprado nada no, muestre el usuario
+                    return current.deuda == 0
+                        ? Container()
+                        : FadeInUp(
+                            delay: Duration(milliseconds: 100 * index + 80),
+                            child: Container(
+                              margin: const EdgeInsets.all(5.0),
+                              width: MediaQuery.of(context).size.width,
+                              //height: MediaQuery.of(context).size.height * 0.10,
+                              color: colorGrey7, // [index % 2]? col,
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    leading: CircleAvatar(
+                                        child: Text(current.nombre
+                                            .substring(0, 1)
+                                            .toString())),
+                                    title: Text(current.nombre),
+                                    subtitle:
+                                        Text('Compro en: ${current.marcas}'),
+                                    trailing: Text(
+                                      "\u0024 ${current.deuda}",
+                                      style: const TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DetalleVenta(
+                                                  modeloVendedor: current,
+                                                )),
+                                      );
+                                    },
+                                  ),
+                                  const Divider(height: 0)
+                                ],
+                              ),
+                            ));
                   }),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Agregar',
         child: const Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 
@@ -196,8 +222,51 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
       initialValue: selectedMenu,
       // Callback that sets the selected popup menu item.
       onSelected: (SampleItem item) async {
-        //opcion salir
-        if (item.index == 2) {
+        setState(() {
+          switch (item) {
+            case SampleItem.salir:
+              () async {
+                //sale sesión
+                await FirebaseAuth.instance.signOut();
+                if (!mounted) return;
+                //se va a la pagina de login
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const WelcomeScreen();
+                }));
+                return;
+              }();
+              break;
+            case SampleItem.deudores:
+              /*Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DetalleVenta()),
+              );*/
+              break;
+            case SampleItem.liquidados:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LiquidadosPage()),
+              );
+              break;
+            case SampleItem.agenda:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AgendaPage(
+                          title: "Agenda",
+                        )),
+              );
+              break;
+            case SampleItem.comprar:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MainWrapper()),
+              );
+              break;
+            default:
+          }
+        });
+        /*if (item.index == 4) {
           //sale sesión
           await FirebaseAuth.instance.signOut();
           if (!mounted) return;
@@ -206,51 +275,68 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
             return const WelcomeScreen();
           }));
           return;
-        }
-        setState(() {
-          selectedMenu = item;
-          if (selectedMenu != null) {
-            if (selectedMenu?.index == 0) {
-              /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  DetalleVenta()),
-              );*/
-            } else if (selectedMenu?.index == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LiquidadosPage()),
-              );
-            } else if (selectedMenu?.index == 2) {
-              //nada
-            } else {
-              print("Pendiente calendario?");
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AgendaPage(
-                          title: "Agenda",
-                        )),
-              );
-            }
-          }
-        });
+        }*/
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
         const PopupMenuItem<SampleItem>(
           value: SampleItem.deudores,
-          child: Text('Deudores'),
+          child: Row(
+            children: [
+              Icon(
+                Icons.point_of_sale_rounded,
+                color: colorGrey1,
+              ),
+              Text('   Deudores')
+            ],
+          ),
         ),
         const PopupMenuItem<SampleItem>(
           value: SampleItem.liquidados,
-          child: Text('Liquidados'),
+          child: Row(
+            children: [
+              Icon(
+                Icons.price_check_rounded,
+                color: colorGrey1,
+              ),
+              Text('   Liquidados')
+            ],
+          ),
         ),
         const PopupMenuItem<SampleItem>(
           value: SampleItem.agenda,
-          child: Text('Agenda'),
+          child: Row(
+            children: [
+              Icon(
+                Icons.calendar_month_rounded,
+                color: colorGrey1,
+              ),
+              Text('   Agenda')
+            ],
+          ),
         ),
         const PopupMenuItem<SampleItem>(
-          value: SampleItem.agenda,
-          child: Text('Cerrar sesión'),
+          value: SampleItem.comprar,
+          child: Row(
+            children: [
+              Icon(
+                Icons.shopping_cart_checkout_rounded,
+                color: colorGrey1,
+              ),
+              Text('   Comprar productos')
+            ],
+          ),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.salir,
+          child: Row(
+            children: [
+              Icon(
+                Icons.logout_rounded,
+                color: colorGrey1,
+              ),
+              Text('   Cerrar sesión')
+            ],
+          ),
         ),
       ],
     );
