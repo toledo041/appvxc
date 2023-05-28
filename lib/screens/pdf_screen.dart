@@ -91,7 +91,12 @@ class _PdfScreenState extends State<PdfScreen> {
                 ),
               ),
             ),
-            Expanded(flex: 7, child: CapturaProductsForm(marca: widget.marca))
+            Expanded(
+                flex: 7,
+                child: CapturaProductsForm(
+                  marca: widget.marca,
+                  path: widget.path,
+                ))
           ],
         ));
   }

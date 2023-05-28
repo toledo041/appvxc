@@ -228,24 +228,25 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 140,
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(48, 8, 8, 8.0),
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    Text("No tienes una cuenta?",
-                        style: TextStyle(
-                          color: Color(0xff1E232C),
-                          fontSize: 15,
-                        )),
-                    Text(" Registrate ahora",
-                        style: TextStyle(
-                          color: Color(0xff35C2C1),
-                          fontSize: 15,
-                        )),
-                  ],
-                ),
-              )
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(48, 8, 8, 8.0),
+                  child: Center(
+                    child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text("No tienes una cuenta?",
+                            style: TextStyle(
+                              color: Color(0xff1E232C),
+                              fontSize: 15,
+                            )),
+                        Text(" Registrate ahora",
+                            style: TextStyle(
+                              color: Color(0xff35C2C1),
+                              fontSize: 15,
+                            )),
+                      ],
+                    ),
+                  ))
             ],
           ),
         ),

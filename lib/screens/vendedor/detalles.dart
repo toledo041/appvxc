@@ -1,9 +1,10 @@
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
+import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+//import 'package:flutter/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/agenda.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/liquidados_page.dart';
-//import 'package:fashion_ecommerce_app/screens/vendedor/vendedor_page.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/pago_dialog.dart';
 
 enum SampleItem { deudores, liquidados, agenda }
@@ -24,6 +25,8 @@ class _DetalleVentaState extends State<DetalleVenta> {
   void initState() {
     super.initState();
     () async {
+      String? correo = await FirebaseAuth.instance.currentUser?.email;
+      await getPagos(correo.toString());
       await calcularDeuda();
       setState(() {
         // Update your UI with the desired changes.
@@ -159,7 +162,7 @@ class _DetalleVentaState extends State<DetalleVenta> {
                 MaterialPageRoute(builder: (context) => const LiquidadosPage()),
               );
             } else {
-              print("Pendiente calendario?");
+              //print("Pendiente calendario?");
               Navigator.push(
                 context,
                 MaterialPageRoute(

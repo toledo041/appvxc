@@ -41,17 +41,18 @@ class _DireccionPageState extends State<DireccionPage> {
     String? correo = await FirebaseAuth.instance.currentUser?.email;
 
     List datos = await getDireccionUsuario(correo.toString());
-    datos.forEach((element) {
-      calleController.text = element["calle"];
-      coloniaController.text = element["colonia"];
-      descripcionController.text = element["descripcion"];
-      direccionPpal = element["dirppal"];
-      estadoController.text = element["estado"];
-      municipioController.text = element["municipio"];
-      numExtController.text = element["numero_ext"];
-      numIntController.text = element["numero_int"];
-      telefonoController.text = element["telefono"];
-    });
+    print("Datos ${datos}");
+    for (var element in datos) {
+      calleController.text = element["calle"] ?? "";
+      coloniaController.text = element["colonia"] ?? "";
+      descripcionController.text = element["descripcion"] ?? "";
+      direccionPpal = element["dirppal"] ?? true;
+      estadoController.text = element["estado"] ?? "";
+      municipioController.text = element["municipio"] ?? "";
+      numExtController.text = element["numero_ext"] ?? "";
+      numIntController.text = element["numero_int"] ?? "";
+      telefonoController.text = element["telefono"] ?? "";
+    }
   }
 
   @override

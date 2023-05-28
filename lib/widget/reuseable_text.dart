@@ -12,8 +12,8 @@ class ReuseableText extends StatelessWidget {
     var textTheme = Theme.of(context).textTheme;
     return RichText(
       text: TextSpan(
-        text: String.fromCharCode(36), //"peso",
-        style: textTheme.subtitle2?.copyWith(
+        text: "${String.fromCharCode(36)} ",
+        style: textTheme.bodyLarge?.copyWith(
           fontSize: 21,
           color: primaryColor,
           fontWeight: FontWeight.bold,
@@ -21,7 +21,7 @@ class ReuseableText extends StatelessWidget {
         children: [
           TextSpan(
             text: price.toString(),
-            style: textTheme.subtitle2?.copyWith(
+            style: textTheme.bodyLarge?.copyWith(
               fontSize: 23,
               fontWeight: FontWeight.bold,
             ),

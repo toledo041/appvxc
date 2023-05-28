@@ -120,10 +120,11 @@ Future<List> getCarritoUsuario(String correo) async {
   QuerySnapshot queryPeople =
       await collectionReferencePeople.where("correo", isEqualTo: correo).get();
 
-  queryPeople.docs.forEach((dcumento) {
+  for (var dcumento in queryPeople.docs) {
     //Se mapea como el tipo de dato que se obtiene una llave cadena y valores cualquiera
     final Map<String, dynamic> data = dcumento.data() as Map<String, dynamic>;
     //se crea un objeto con las propiedades que necesitamos
+    print("Producto: ${data}");
     final producto = {
       "codigo": data["codigo"],
       "tamano": data["tamano"],
@@ -133,7 +134,8 @@ Future<List> getCarritoUsuario(String correo) async {
       "uid": dcumento.id
     }; //id del elemento
     carrito.add(producto);
-  });
+  }
+
   //print("es vendedor ${esVendedor}");
 
   return carrito;
@@ -193,25 +195,43 @@ Future<List> getDireccionUsuario(String correo) async {
   QuerySnapshot queryPeople =
       await collectionReferencePeople.where("correo", isEqualTo: correo).get();
 
-  queryPeople.docs.forEach((dcumento) {
-    //Se mapea como el tipo de dato que se obtiene una llave cadena y valores cualquiera
-    final Map<String, dynamic> data = dcumento.data() as Map<String, dynamic>;
-    //se crea un objeto con las propiedades que necesitamos
+  if (queryPeople.docs.isEmpty) {
     final direccion = {
-      "calle": data["calle"],
-      "colonia": data["colonia"],
-      "correo": data["correo"],
-      "descripcion": data["descripcion"],
-      "dirppal": data["dirppal"],
-      "estado": data["estado"],
-      "municipio": data["municipio"],
-      "numero_ext": data["numero_ext"],
-      "numero_int": data["numero_int"],
-      "telefono": data["telefono"],
-      "uid": dcumento.id
+      "calle": "",
+      "colonia": "",
+      "correo": "",
+      "descripcion": "",
+      "dirppal": true,
+      "estado": "",
+      "municipio": "",
+      "numero_ext": "",
+      "numero_int": "",
+      "telefono": "",
+      "uid": ""
     }; //id del elemento
     direccionUsuario.add(direccion);
-  });
+  } else {
+    for (var dcumento in queryPeople.docs) {
+      //Se mapea como el tipo de dato que se obtiene una llave cadena y valores cualquiera
+      final Map<String, dynamic> data = dcumento.data() as Map<String, dynamic>;
+      //se crea un objeto con las propiedades que necesitamos
+      final direccion = {
+        "calle": data["calle"],
+        "colonia": data["colonia"],
+        "correo": data["correo"],
+        "descripcion": data["descripcion"],
+        "dirppal": data["dirppal"],
+        "estado": data["estado"],
+        "municipio": data["municipio"],
+        "numero_ext": data["numero_ext"],
+        "numero_int": data["numero_int"],
+        "telefono": data["telefono"],
+        "uid": dcumento.id
+      }; //id del elemento
+      direccionUsuario.add(direccion);
+    }
+  }
+
   //print("es vendedor ${esVendedor}");
 
   return direccionUsuario;
@@ -259,7 +279,7 @@ Future<List<VendedorModel>> getUsuariosVenta() async {
   //el get se trae todo lo que hay en la colección falta filtrar
   QuerySnapshot queryPeople = await collectionReferencePeople
       .where("tipo_usuario")
-      .where("es_vendedor", isEqualTo: false)
+      //.where("es_vendedor", isEqualTo: false)
       .get();
 
   //Se obtienen los usuarios que no son vendedores
@@ -358,17 +378,15 @@ Future<List<ProductoModel>> getCatalogoProductos(String marca) async {
 }
 
 //TODO FALTA POR TERMINAR
-Future getPagos() async {
-  List res = [];
+Future getPagos(String correo) async {
+  //List res = [];
   //Se buscara el carrito por usuario y se calculara su deuda y abono
   CollectionReference collectionReferenceCarrito =
       db.collection("pagos_usuario");
 
   //el get se trae todo lo que hay en la colección falta filtrar
-  QuerySnapshot queryCarrito = await collectionReferenceCarrito
-      //.where("carrito_usuario")
-      //.where("correo", isEqualTo: correo)
-      .get();
+  QuerySnapshot queryCarrito =
+      await collectionReferenceCarrito.where("correo", isEqualTo: correo).get();
 
   for (var carrito in queryCarrito.docs) {
     final Map<String, dynamic> cart = carrito.data() as Map<String, dynamic>;

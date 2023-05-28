@@ -3,6 +3,8 @@ import 'package:advance_notification/advance_notification.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:fashion_ecommerce_app/model/base_model.dart';
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
+import 'package:fashion_ecommerce_app/screens/cart.dart';
+import 'package:fashion_ecommerce_app/screens/pdf_screen.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:fashion_ecommerce_app/widget/add_to_cart.dart';
 import 'package:fashion_ecommerce_app/widget/reuseable_button.dart';
@@ -12,7 +14,9 @@ import 'package:flutter/material.dart';
 ///Forma con la información de captura que se usara para capturar los productos
 class CapturaProductsForm extends StatefulWidget {
   final String marca;
-  const CapturaProductsForm({super.key, required this.marca});
+  final String path;
+  const CapturaProductsForm(
+      {super.key, required this.marca, required this.path});
   @override
   State<CapturaProductsForm> createState() => CapturaProductsFormState();
 }
@@ -20,7 +24,7 @@ class CapturaProductsForm extends StatefulWidget {
 // Define una clase de estado correspondiente. Esta clase contendrá los datos
 // relacionados con el formulario.
 class CapturaProductsFormState extends State<CapturaProductsForm> {
-  //final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   final String? correo = FirebaseAuth.instance.currentUser?.email;
   String name = "";
@@ -83,7 +87,7 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
   Widget build(BuildContext context) {
     // Cree un widget Form usando el _formKey que creamos anteriormente
     return Form(
-      //key: _formKey,
+      key: _formKey,
       child: Column(
         children: <Widget>[
           RawAutocomplete<ProductoModel>(
@@ -111,7 +115,7 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
                 },
                 decoration: const InputDecoration(
                     labelText: "Introduzca código de producto",
-                    hintText: "Number",
+                    hintText: "Seleccione una opción",
                     icon: Icon(Icons.shopping_bag)),
                 style: const TextStyle(
                   fontSize: 12,
@@ -138,6 +142,7 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
                           onTap: () {
                             print("seleccionado: ${option.codigo}");
                             onSelected(option);
+                            codigoController.text = option.codigo;
                             precioController.text = option.precio;
                             tamTallaController.text = option.tamano;
                             setState(() {});
@@ -159,7 +164,7 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
             maxLength: 10,
             decoration: const InputDecoration(
                 labelText: "Precio del producto",
-                hintText: "Number",
+                hintText: "Numérico",
                 icon: Icon(
                   Icons.local_atm_rounded,
                 )),
@@ -173,11 +178,12 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
             maxLength: 10,
             decoration: const InputDecoration(
                 labelText: "Introduzca tamaño/talla del producto",
-                hintText: "Number",
+                //hintText: "Number",
                 icon: Icon(Icons.open_in_full_rounded)),
             style: const TextStyle(
               fontSize: 12,
             ),
+            textCapitalization: TextCapitalization.characters,
           ),
           TextFormField(
             controller: cantidadController,
@@ -188,7 +194,7 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
             maxLength: 25,
             decoration: const InputDecoration(
                 labelText: "Introduzca la cantidad del producto",
-                hintText: "Number",
+                hintText: "Numérico",
                 icon: Icon(Icons.numbers)),
             style: const TextStyle(
               fontSize: 12,
@@ -244,8 +250,42 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
 
                   /*String? correo =
                       await FirebaseAuth.instance.currentUser?.email;*/
-                  print(correo.toString());
+                  //print(correo.toString());
                   //Se agrega el producto a la base
+                  //print("Codigo al agregar ${codigoController.text}");
+                  if (codigoController.text.isEmpty) {
+                    const AdvanceSnackBar(
+                      textSize: 14.0,
+                      bgColor: Colors.red,
+                      message: 'Debe seleccionar un código de producto',
+                      mode: Mode.ADVANCE,
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                    return;
+                  }
+
+                  if (tamTallaController.text.isEmpty) {
+                    const AdvanceSnackBar(
+                      textSize: 14.0,
+                      bgColor: Colors.red,
+                      message: 'Debe introducir un tamaño/talla válido',
+                      mode: Mode.ADVANCE,
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                    return;
+                  }
+
+                  if (cantidadController.text.isEmpty) {
+                    const AdvanceSnackBar(
+                      textSize: 14.0,
+                      bgColor: Colors.red,
+                      message: 'Debe introducir una cantidad válida',
+                      mode: Mode.ADVANCE,
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                    return;
+                  }
+
                   await addCarritoUsuario(
                       codigoController.text,
                       tamTallaController.text,
@@ -271,6 +311,15 @@ class CapturaProductsFormState extends State<CapturaProductsForm> {
                   precioController.text = "";
 
                   setState(() {});
+                  await Future.delayed(const Duration(seconds: 2));
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PdfScreen(
+                                marca: widget.marca,
+                                path: widget.path,
+                              )));
                 },
               ),
             ),
