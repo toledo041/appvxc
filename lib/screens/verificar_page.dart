@@ -1,7 +1,10 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:fashion_ecommerce_app/model/direccion_model.dart';
 import 'package:fashion_ecommerce_app/screens/cart.dart';
+import 'package:fashion_ecommerce_app/screens/form_check_cart.dart';
 
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -9,7 +12,16 @@ import 'package:line_icons/line_icons.dart';
 import '../../data/app_data.dart';
 import '../../widget/reuseable_row_for_cart.dart';
 import '../model/base_model.dart';
-import '../../widget/reuseable_button.dart';
+
+enum PagoUsuario { tarjeta, aPlazos }
+
+const List<String> listaMetodoPago = <String>[
+  'Seleccione una opción',
+  'Contado',
+  'En abonos'
+];
+String dropdownPagoValue = listaMetodoPago.first;
+String abonoValue = "";
 
 class CheckPage extends StatefulWidget {
   const CheckPage({super.key});
@@ -19,6 +31,9 @@ class CheckPage extends StatefulWidget {
 }
 
 class _CheckPageState extends State<CheckPage> {
+  DireccionModel direccionUsuario = DireccionModel();
+  double totalCompra = 0.0;
+
   /// Calcular el precio total
   double calculateTotalPrice() {
     double total = 0.0;
@@ -30,6 +45,7 @@ class _CheckPageState extends State<CheckPage> {
       }
     }
     total = double.parse((total).toStringAsFixed(2));
+    totalCompra = total;
     return total;
   }
 
@@ -52,17 +68,18 @@ class _CheckPageState extends State<CheckPage> {
   }
 
   /// Calcular el precio subtotal
-  int calculateSubTotalPrice() {
-    int subTotal = 0;
+  double calculateSubTotalPrice() {
+    double subTotal = 0.0;
     if (itemsOnCart.isEmpty) {
-      subTotal = 0;
+      subTotal = 0.0;
     } else {
       for (BaseModel data in itemsOnCart) {
-        subTotal = subTotal + data.price.round();
-        subTotal = (subTotal * 0.15).round(); //subTotal - 160;
+        subTotal = subTotal + data.price;
+        subTotal += double.parse(
+            (subTotal * 0.15).toStringAsFixed(2)); //subTotal - 160;
       }
     }
-    return subTotal < 0 ? 0 : subTotal;
+    return subTotal;
   }
 
   /// eliminar función para carrito
@@ -84,9 +101,10 @@ class _CheckPageState extends State<CheckPage> {
 
     () async {
       await getCart();
-      setState(() {
-        // Update your UI with the desired changes.
-      });
+      await getDomicilioUsuario();
+      String? correo = await FirebaseAuth.instance.currentUser?.email;
+      getPagoUsuario(correo.toString());
+      setState(() {});
     }();
   }
 
@@ -112,10 +130,29 @@ class _CheckPageState extends State<CheckPage> {
     }
   }
 
+  Future getDomicilioUsuario() async {
+    String? correoUsr = await FirebaseAuth.instance.currentUser?.email;
+    String nombre = await getNombreUsuario(correoUsr.toString());
+    List direccion = await getDireccionUsuario(correoUsr.toString());
+    for (var element in direccion) {
+      DireccionModel modelo = DireccionModel(
+          calle: element["calle"] ?? "",
+          colonia: element["colonia"] ?? "",
+          descripcion: element["descripcion"] ?? "",
+          estado: element["estado"] ?? "",
+          municipio: element["municipio"] ?? "",
+          numeroExt: element["numero_ext"] ?? "",
+          numeroInt: element["numero_int"] ?? "",
+          telefono: element["telefono"] ?? "",
+          nombre: nombre,
+          correo: correoUsr.toString());
+      direccionUsuario = modelo;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    //var textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: _buildAppBar(context),
@@ -129,31 +166,13 @@ class _CheckPageState extends State<CheckPage> {
               //bottom: 0,
               child: Container(
                 width: size.width,
-                height: size.height * 0.40,
+                height: size.height * 0.9,
                 color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10.0, vertical: 12.0),
                   child: Column(
                     children: [
-                      //const Divider(color: Colors.black),
-                      /*FadeInUp(
-                        delay: const Duration(milliseconds: 350),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Promoción/Código de estudiante o vales",
-                              style: textTheme.headlineMedium
-                                  ?.copyWith(fontSize: 16),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios_sharp,
-                              color: Colors.grey,
-                            ),
-                          ],
-                        ),
-                      ),*/
                       SizedBox(
                         height: size.height * 0.01,
                       ),
@@ -164,6 +183,13 @@ class _CheckPageState extends State<CheckPage> {
                           text: 'Envío',
                         ),
                       ),
+                      FadeInUp(
+                        delay: const Duration(milliseconds: 500),
+                        child: ReuseableRowForCart(
+                          price: calculateTotalPrice(),
+                          text: 'Subtotal',
+                        ),
+                      ),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.0),
                         child: Divider(),
@@ -171,28 +197,76 @@ class _CheckPageState extends State<CheckPage> {
                       FadeInUp(
                         delay: const Duration(milliseconds: 500),
                         child: ReuseableRowForCart(
-                          price: calculateTotalPrice(),
+                          price: (calculateTotalPrice() + calculateShipping()),
                           text: 'Total',
                         ),
                       ),
 
+                      //Datos de dirección
                       FadeInUp(
                         delay: const Duration(milliseconds: 550),
                         child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 14.0),
-                            child: Expanded(
-                              child: ReuseableButton(
-                                  text: "Realizar pedido",
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    /*Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Cart()));*/
-                                  }),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text("Enviar a",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall
+                                            ?.copyWith(
+                                              color: Colors.black87,
+                                              //fontSize: 18
+                                            )),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4.0, horizontal: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                          "Calle ${direccionUsuario.calle} #${direccionUsuario.numeroExt}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                              ?.copyWith(
+                                                  color: Colors.grey,
+                                                  fontSize: 16)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2.0, horizontal: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                          " ${direccionUsuario.estado}, ${direccionUsuario.municipio}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                              ?.copyWith(
+                                                  color: Colors.grey,
+                                                  fontSize: 16)),
+                                      Text(
+                                          " ${direccionUsuario.nombre}  tel. ${direccionUsuario.telefono}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                              ?.copyWith(
+                                                  color: Colors.grey,
+                                                  fontSize: 16))
+                                    ],
+                                  ),
+                                ),
+                              ],
                             )),
-                      )
+                      ),
+                      CheckCartForm(
+                          total: (calculateTotalPrice() + calculateShipping()),
+                          direccionModel: direccionUsuario),
                     ],
                   ),
                 ),

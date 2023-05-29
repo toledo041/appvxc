@@ -2,7 +2,7 @@ import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:fashion_ecommerce_app/widgets/customized_textfield.dart';
 import 'package:fashion_ecommerce_app/widgets/user_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../widgets/customized_button.dart';
+import 'package:fashion_ecommerce_app/widgets/customized_button.dart';
 import 'package:flutter/material.dart';
 
 class DireccionPage extends StatefulWidget {
@@ -41,7 +41,7 @@ class _DireccionPageState extends State<DireccionPage> {
     String? correo = await FirebaseAuth.instance.currentUser?.email;
 
     List datos = await getDireccionUsuario(correo.toString());
-    print("Datos ${datos}");
+    //print("Datos ${datos}");
     for (var element in datos) {
       calleController.text = element["calle"] ?? "";
       coloniaController.text = element["colonia"] ?? "";

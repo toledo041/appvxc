@@ -1,7 +1,6 @@
-import '../widgets/customized_button.dart';
+import 'package:fashion_ecommerce_app/widgets/customized_button.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/customized_textfield.dart';
+import 'package:fashion_ecommerce_app/widgets/customized_textfield.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);

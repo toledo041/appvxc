@@ -5,6 +5,7 @@ class VendedorModel {
   final double abono; //
   final String uid;
   String marcas;
+  bool liquidada;
   List carrito = [];
 
   VendedorModel(
@@ -14,7 +15,8 @@ class VendedorModel {
       required this.abono,
       required this.uid,
       required this.carrito,
-      this.marcas = ""});
+      this.marcas = "",
+      this.liquidada = false});
 }
 
 class ProductoModel {
@@ -28,4 +30,22 @@ class ProductoModel {
       required this.codigo,
       required this.precio,
       this.tamano = ""});
+}
+
+//{marca: N/A, deuda: 2663.01, liquidada: true, name: Humbere, abono: 2663.01, email: beto@gmail.com}
+class PagoModel {
+  String marca;
+  double deuda;
+  bool liquidada;
+  String nombre;
+  double abono;
+  String correo;
+
+  PagoModel(
+      {this.marca = "",
+      required this.deuda,
+      required this.abono,
+      required this.liquidada,
+      required this.correo,
+      this.nombre = ""});
 }

@@ -19,11 +19,10 @@ class _ListViewUserMenuState extends State<ListViewUserMenu> {
       padding: EdgeInsets.zero,
       children: [
         const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.black26,
-            ),
-            child: Text("Información")
-            /*Column(
+          decoration: BoxDecoration(
+            color: Colors.black26,
+          ),
+          child: Column(
             children: [
               Text('Información'),
               CircleAvatar(
@@ -33,8 +32,8 @@ class _ListViewUserMenuState extends State<ListViewUserMenu> {
                 ),
               )
             ],
-          ),*/
-            ),
+          ),
+        ),
         /*ListTile(
           title: const Text('Inicio'),
           onTap: () {

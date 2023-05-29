@@ -1,11 +1,13 @@
+import 'package:advance_notification/advance_notification.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:flutter/material.dart';
-
-import '../model/base_model.dart';
-import '../../utils/constants.dart';
-import '../../widget/add_to_cart.dart';
-import '../../widget/reuseable_text.dart';
-import '../../widget/reuseable_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fashion_ecommerce_app/model/base_model.dart';
+import 'package:fashion_ecommerce_app/utils/constants.dart';
+import 'package:fashion_ecommerce_app/widget/add_to_cart.dart';
+import 'package:fashion_ecommerce_app/widget/reuseable_text.dart';
+import 'package:fashion_ecommerce_app/widget/reuseable_button.dart';
 
 class Details extends StatefulWidget {
   const Details({
@@ -24,6 +26,23 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   int selectedSize = 3;
   int selectedColor = 0;
+  String usuario = "";
+  final cantidadController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    () async {
+      await getUsuario();
+      setState(() {});
+    }();
+  }
+
+  Future getUsuario() async {
+    String? correo = await FirebaseAuth.instance.currentUser?.email;
+    usuario = await getNombreUsuario(correo.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +57,7 @@ class _DetailsState extends State<Details> {
       appBar: _buildAppBar(context),
       body: SizedBox(
         width: size.width,
-        height: size.height,
+        height: size.height * .9,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -105,33 +124,6 @@ class _DetailsState extends State<Details> {
                       SizedBox(
                         height: size.height * 0.006,
                       ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(current.star.toString(),
-                              style: textTheme.headlineSmall),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text("(${current.review.toString()}K+ review)",
-                              style: textTheme.headlineSmall
-                                  ?.copyWith(color: Colors.grey)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          const Icon(
-                            Icons.arrow_forward_ios_sharp,
-                            color: Colors.grey,
-                            size: 15,
-                          ),
-                        ],
-                      )
                     ],
                   ),
                 ),
@@ -199,56 +191,30 @@ class _DetailsState extends State<Details> {
                     }),
               ),
             ),
-
-            /// Select Color
             FadeInUp(
-              delay: const Duration(milliseconds: 600),
+              delay: const Duration(milliseconds: 400),
               child: Padding(
                 padding:
                     const EdgeInsets.only(left: 10.0, top: 18.0, bottom: 10.0),
                 child: Text(
-                  "Seleccionar Color",
+                  "Seleccionar Cantidad ",
                   style: textTheme.headlineSmall,
                 ),
               ),
             ),
-
-            ///Colors
-            FadeInUp(
-              delay: const Duration(milliseconds: 700),
-              child: SizedBox(
-                width: size.width,
-                height: size.height * 0.08,
-                child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: colors.length,
-                    itemBuilder: (ctx, index) {
-                      var current = colors[index];
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = index;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: AnimatedContainer(
-                            width: size.width * 0.12,
-                            decoration: BoxDecoration(
-                              color: current,
-                              border: Border.all(
-                                  color: selectedColor == index
-                                      ? primaryColor
-                                      : Colors.transparent,
-                                  width: selectedColor == index ? 2 : 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            duration: const Duration(milliseconds: 200),
-                          ),
-                        ),
-                      );
-                    }),
+            TextFormField(
+              controller: cantidadController,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: false,
+                signed: false,
+              ),
+              maxLength: 25,
+              decoration: const InputDecoration(
+                  //labelText: "",
+                  hintText: "Cantidad de producto",
+                  icon: Icon(Icons.numbers)),
+              style: const TextStyle(
+                fontSize: 18,
               ),
             ),
 
@@ -259,8 +225,35 @@ class _DetailsState extends State<Details> {
                 padding: EdgeInsets.only(top: size.height * 0.03),
                 child: ReuseableButton(
                   text: "Añadir al carrito",
-                  onTap: () {
+                  onTap: () async {
+                    //Se valida la
+                    if (cantidadController.text.isEmpty) {
+                      const AdvanceSnackBar(
+                        textSize: 14.0,
+                        message: 'Introduzca una cantidad válida.',
+                        mode: Mode.ADVANCE,
+                        duration: Duration(seconds: 5),
+                        icon: Icon(Icons.error),
+                      ).show(context);
+                      return;
+                    }
+
+                    String? correo =
+                        await FirebaseAuth.instance.currentUser?.email;
+
+                    await addCarritoUsuario(
+                        widget.data.codigo,
+                        sizes[selectedSize],
+                        int.parse(cantidadController.text),
+                        widget.data.price,
+                        correo.toString(),
+                        widget.data.marca,
+                        usuario);
                     AddToCart.addToCart(current, context);
+
+                    await Future.delayed(const Duration(seconds: 2));
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
                   },
                 ),
               ),

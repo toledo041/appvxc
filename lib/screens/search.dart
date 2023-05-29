@@ -63,7 +63,7 @@ class _SearchState extends State<Search> {
                         onChanged: (value) {
                           onSearch(value);
                         },
-                        style: textTheme.headline3?.copyWith(
+                        style: textTheme.headlineSmall?.copyWith(
                             fontSize: 15, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -79,12 +79,12 @@ class _SearchState extends State<Search> {
                             },
                             icon: const Icon(Icons.close),
                           ),
-                          hintStyle: textTheme.headline3?.copyWith(
+                          hintStyle: textTheme.headlineSmall?.copyWith(
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
                             color: Colors.grey[600],
                           ),
-                          hintText: "Labial",
+                          hintText: "Buscar",
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(13),
@@ -138,7 +138,7 @@ class _SearchState extends State<Search> {
                                       right: size.width * 0.01,
                                       child: Container(
                                         width: size.width * 0.5,
-                                        height: size.height * 0.28,
+                                        height: size.height * 0.24,
                                         margin: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -162,26 +162,28 @@ class _SearchState extends State<Search> {
                                       bottom: size.height * 0.04,
                                       child: Text(
                                         current.name,
-                                        style: textTheme.headline2,
+                                        style: textTheme.headlineSmall,
                                       ),
                                     ),
                                     Positioned(
                                       bottom: size.height * 0.01,
                                       child: RichText(
                                           text: TextSpan(
-                                              text: "€",
-                                              style:
-                                                  textTheme.subtitle2?.copyWith(
+                                              text:
+                                                  "${String.fromCharCode(36)} ",
+                                              style: textTheme.bodyMedium
+                                                  ?.copyWith(
                                                 color: primaryColor,
-                                                fontSize: 20,
+                                                fontSize: 18,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                               children: [
                                             TextSpan(
                                               text: current.price.toString(),
                                               style:
-                                                  textTheme.subtitle2?.copyWith(
+                                                  textTheme.bodyLarge?.copyWith(
                                                 fontWeight: FontWeight.bold,
+                                                fontSize: 20,
                                               ),
                                             )
                                           ])),
@@ -231,7 +233,7 @@ class _SearchState extends State<Search> {
                           FadeInUp(
                             delay: const Duration(milliseconds: 250),
                             child: const Text(
-                              "No se encontraron resultados:(",
+                              "No se encontraron resultados",
                               style: TextStyle(
                                   fontWeight: FontWeight.w400, fontSize: 16),
                             ),

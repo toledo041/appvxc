@@ -53,7 +53,6 @@ class _MainWrapperState extends State<MainWrapper> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            print("=== Menu ===");
             //aqui se abre el menu!
             _key.currentState!.openDrawer();
           },

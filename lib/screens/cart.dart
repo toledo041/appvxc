@@ -5,14 +5,13 @@ import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-
-import '../../data/app_data.dart';
-import '../../widget/reuseable_row_for_cart.dart';
-import '../../main_wrapper.dart';
-import '../model/base_model.dart';
-import '../../utils/constants.dart';
-import '../../widget/reuseable_button.dart';
-import 'verificar_page.dart';
+import 'package:fashion_ecommerce_app/data/app_data.dart';
+import 'package:fashion_ecommerce_app/widget/reuseable_row_for_cart.dart';
+import 'package:fashion_ecommerce_app/widget/reuseable_button.dart';
+import 'package:fashion_ecommerce_app/main_wrapper.dart';
+import 'package:fashion_ecommerce_app/model/base_model.dart';
+import 'package:fashion_ecommerce_app/utils/constants.dart';
+import 'package:fashion_ecommerce_app/screens/verificar_page.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -33,6 +32,7 @@ class _CartState extends State<Cart> {
       }
     }
     total = double.parse((total).toStringAsFixed(2));
+    calculateShipping();
     return total;
   }
 
@@ -90,6 +90,7 @@ class _CartState extends State<Cart> {
 
     () async {
       await getCart();
+
       setState(() {
         // Update your UI with the desired changes.
       });
@@ -117,6 +118,7 @@ class _CartState extends State<Cart> {
       itemsOnCart.add(model);
       index++;
     }
+    await getPagoUsuario(correo.toString());
   }
 
   @override
@@ -187,7 +189,7 @@ class _CartState extends State<Cart> {
                                 : Colors.white,
                             margin: const EdgeInsets.all(5.0),
                             width: size.width,
-                            height: size.height * 0.3,
+                            height: size.height * 0.22,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,32 +203,30 @@ class _CartState extends State<Cart> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: size.width * 0.9,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Código:  ${current.name}",
-                                                style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    onDelete(current);
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.close,
-                                                    color: Colors.grey,
-                                                  ))
-                                            ],
-                                          ),
+                                      SizedBox(
+                                        width: size.width * 0.9,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Código:  ${current.name}",
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            IconButton(
+                                                onPressed: () {
+                                                  onDelete(current);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.grey,
+                                                ))
+                                          ],
                                         ),
                                       ),
+                                      //),
                                       RichText(
                                           text: TextSpan(
                                               text:
@@ -363,30 +363,13 @@ class _CartState extends State<Cart> {
               bottom: 0, //posiciona hasta abajo
               child: Container(
                 width: size.width,
-                height: size.height * 0.40,
+                height: size.height * 0.41,
                 color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10.0, vertical: 0.0),
                   child: Column(
                     children: [
-                      /*FadeInUp(
-                        delay: const Duration(milliseconds: 350),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Promoción/Código de estudiante o vales",
-                              style: textTheme.headlineMedium
-                                  ?.copyWith(fontSize: 16),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios_sharp,
-                              color: Colors.grey,
-                            ),
-                          ],
-                        ),
-                      ),*/
                       const Divider(
                         color: Colors.black38,
                       ),
@@ -397,7 +380,14 @@ class _CartState extends State<Cart> {
                         delay: const Duration(milliseconds: 450),
                         child: ReuseableRowForCart(
                           price: calculateShipping(),
-                          text: 'Envio',
+                          text: 'Envío',
+                        ),
+                      ),
+                      FadeInUp(
+                        delay: const Duration(milliseconds: 500),
+                        child: ReuseableRowForCart(
+                          price: calculateTotalPrice(),
+                          text: 'Subtotal',
                         ),
                       ),
                       const Padding(
@@ -407,25 +397,24 @@ class _CartState extends State<Cart> {
                       FadeInUp(
                         delay: const Duration(milliseconds: 500),
                         child: ReuseableRowForCart(
-                          price: calculateTotalPrice(),
+                          price: (calculateTotalPrice() + calculateShipping()),
                           text: 'Total',
                         ),
                       ),
                       FadeInUp(
                         delay: const Duration(milliseconds: 550),
                         child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 14.0),
-                            child: Expanded(
-                              child: ReuseableButton(
-                                  text: "Realizar la compra",
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CheckPage()));
-                                  }),
-                            )),
+                          padding: const EdgeInsets.symmetric(vertical: 14.0),
+                          child: ReuseableButton(
+                              text: "Realizar la compra",
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CheckPage()));
+                              }),
+                        ),
                       )
                     ],
                   ),

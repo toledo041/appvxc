@@ -43,6 +43,7 @@ class HomePageVendedor extends StatefulWidget {
 class _HomePageVendedorState extends State<HomePageVendedor> {
   List<VendedorModel> itemsOnVendor = [];
   List carritos = [];
+  List<PagoModel> pagos = [];
 
   void _incrementCounter() {
     setState(() {
@@ -61,13 +62,15 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
     () async {
       await getVentas();
       await getCarritoAll();
-
-      await getPagos();
+      pagos = await getPagosUsuarios();
 
       for (var usuario in itemsOnVendor) {
+        usuario.liquidada = false;
         double deuda = 0.0;
+        double shipping = 0.0;
         List listaElm = [];
         String marcas = "";
+        //DEUDA
         for (var carrito in carritos) {
           if (usuario.correo == carrito["correo"]) {
             deuda += (carrito["cantidad"] * carrito["precio"]);
@@ -78,9 +81,24 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
           }
 
           usuario.deuda = double.parse((deuda).toStringAsFixed(2));
+
           usuario.carrito = listaElm;
         }
-        //print("marcas: ${marcas}");
+        //Se calcula el envío y se suma a la deuda
+        shipping = (deuda + (deuda == 0.0 ? 0.0 : 25.99)) * 0.09;
+        shipping = double.parse((shipping).toStringAsFixed(2));
+        usuario.deuda = (deuda + shipping);
+        //ABONO
+        for (var element in pagos) {
+          //print("usuario ${usuario.correo} liquidado? ${element.correo}");
+          if (usuario.correo == element.correo) {
+            print("pago ${element}");
+            usuario.liquidada = element.liquidada;
+            double pagado = element.abono;
+            break;
+          }
+        }
+        print("usuario ${usuario.correo} liquidado? ${usuario.liquidada}");
         usuario.marcas = marcas;
       }
 
@@ -166,7 +184,7 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
                   itemBuilder: (context, index) {
                     var current = itemsOnVendor[index];
                     //Si no ha comprado nada no, muestre el usuario
-                    return current.deuda == 0
+                    return (current.liquidada || current.deuda == 0.0)
                         ? Container()
                         : FadeInUp(
                             delay: Duration(milliseconds: 100 * index + 80),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
+import 'package:fashion_ecommerce_app/screens/verificar_page.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -124,7 +125,7 @@ Future<List> getCarritoUsuario(String correo) async {
     //Se mapea como el tipo de dato que se obtiene una llave cadena y valores cualquiera
     final Map<String, dynamic> data = dcumento.data() as Map<String, dynamic>;
     //se crea un objeto con las propiedades que necesitamos
-    print("Producto: ${data}");
+    //print("Producto: ${data}");
     final producto = {
       "codigo": data["codigo"],
       "tamano": data["tamano"],
@@ -377,20 +378,34 @@ Future<List<ProductoModel>> getCatalogoProductos(String marca) async {
   return res;
 }
 
+//PAGOS
+//guardar información en la bd
+Future<void> addPagoUsuario(double deuda, bool liquidada, String nombre,
+    double abono, String correo) async {
+  await db.collection("pagos_usuario").add({
+    "deuda": deuda,
+    "marca": "N/A",
+    "liquidada": liquidada,
+    "name": nombre,
+    "abono": abono,
+    "email": correo
+  });
+}
+
 //TODO FALTA POR TERMINAR
-Future getPagos(String correo) async {
+Future getPagoUsuario(String correo) async {
   //List res = [];
   //Se buscara el carrito por usuario y se calculara su deuda y abono
   CollectionReference collectionReferenceCarrito =
       db.collection("pagos_usuario");
 
   //el get se trae todo lo que hay en la colección falta filtrar
-  QuerySnapshot queryCarrito =
-      await collectionReferenceCarrito.where("correo", isEqualTo: correo).get();
-
-  for (var carrito in queryCarrito.docs) {
-    final Map<String, dynamic> cart = carrito.data() as Map<String, dynamic>;
-    print(cart);
+  QuerySnapshot queryPagos =
+      await collectionReferenceCarrito.where("email", isEqualTo: correo).get();
+  //print("Pago usuario: ${queryPagos.docs}");
+  for (var pago in queryPagos.docs) {
+    final Map<String, dynamic> cart = pago.data() as Map<String, dynamic>;
+    print("Pago usuario: ${cart}");
     /*final calculado = {
       "cantidad": cart["cantidad"],
       "codigo": cart["codigo"],
@@ -410,4 +425,34 @@ Future getPagos(String correo) async {
   //print("deuda calculada ${res}");
 
   //return res;
+}
+
+Future<List<PagoModel>> getPagosUsuarios() async {
+  List<PagoModel> res = [];
+  //Se buscara el carrito por usuario y se calculara su deuda y abono
+  CollectionReference collectionReferenceCarrito =
+      db.collection("pagos_usuario");
+
+  //el get se trae todo lo que hay en la colección falta filtrar
+  QuerySnapshot queryPagos = await collectionReferenceCarrito.get();
+
+  for (var pago in queryPagos.docs) {
+    final Map<String, dynamic> cart = pago.data() as Map<String, dynamic>;
+    //print("Pago usuario: ${cart}");
+    PagoModel pagoUsuario = PagoModel(
+        deuda: cart["deuda"] * 1.0,
+        abono: cart["abono"] * 1.0,
+        liquidada: cart["liquidada"],
+        correo: cart["email"]);
+    /*{
+      "deuda": cart["deuda"],
+      "liquidada": cart["liquidada"],
+      "name": cart["nombre"],
+      "abono": cart["abono"],
+      "correo": cart["correo"]
+    };*/
+
+    res.add(pagoUsuario);
+  }
+  return res;
 }

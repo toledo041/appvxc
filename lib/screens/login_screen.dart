@@ -2,9 +2,9 @@ import 'package:fashion_ecommerce_app/main_wrapper.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/vendedor_page.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../screens/home_screen.dart';
-import '../screens/signup_screen.dart';
-import '../widgets/customized_textfield.dart';
+import 'package:fashion_ecommerce_app/screens/home_screen.dart';
+import 'package:fashion_ecommerce_app/screens/signup_screen.dart';
+import 'package:fashion_ecommerce_app/widgets/customized_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -149,13 +149,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Container(
                       height: 1,
-                      width: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.2,
                       color: Colors.grey,
                     ),
-                    const Text("o inicia sesión con "),
+                    const Center(
+                      child: Text("o inicia sesión con "),
+                    ),
                     Container(
                       height: 1,
-                      width: MediaQuery.of(context).size.height * 0.18,
+                      width: MediaQuery.of(context).size.height * 0.2,
                       color: Colors.grey,
                     ),
                   ],

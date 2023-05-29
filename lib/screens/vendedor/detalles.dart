@@ -1,7 +1,6 @@
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/agenda.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/liquidados_page.dart';
@@ -26,7 +25,7 @@ class _DetalleVentaState extends State<DetalleVenta> {
     super.initState();
     () async {
       String? correo = await FirebaseAuth.instance.currentUser?.email;
-      await getPagos(correo.toString());
+      await getPagoUsuario(correo.toString());
       await calcularDeuda();
       setState(() {
         // Update your UI with the desired changes.

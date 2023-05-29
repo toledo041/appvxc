@@ -2,11 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:fashion_ecommerce_app/screens/pdf_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/app_data.dart';
-import '../screens/details.dart';
-import '../model/categories_model.dart';
-import '../../utils/constants.dart';
-import '../model/base_model.dart';
+import 'package:fashion_ecommerce_app/data/app_data.dart';
+import 'package:fashion_ecommerce_app/screens/details.dart';
+import 'package:fashion_ecommerce_app/model/categories_model.dart';
+import 'package:fashion_ecommerce_app/utils/constants.dart';
+import 'package:fashion_ecommerce_app/model/base_model.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -92,54 +92,49 @@ class _HomeState extends State<Home> {
                 FadeInUp(
                   delay: const Duration(milliseconds: 450),
                   child: Container(
-                      margin: const EdgeInsets.only(top: 7),
-                      width: size.width,
-                      height: size.height * 0.17,
-                      child: Expanded(
-                        child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: categories.length,
-                            itemBuilder: (ctx, index) {
-                              CategoriesModel current = categories[index];
-                              return Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Expanded(
-                                    flex: 1,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PdfScreen(
-                                                          path: current.pdfUrl,
-                                                          marca: current.title,
-                                                        )));
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 35,
-                                            backgroundImage:
-                                                AssetImage(current.imageUrl),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: size.height * 0.008,
-                                        ),
-                                        Text(
-                                          current.title,
-                                          style: textTheme.bodySmall,
-                                          overflow: TextOverflow.visible,
-                                        ),
-                                      ],
-                                    ),
-                                  ));
-                            }),
-                      )),
+                    margin: const EdgeInsets.only(top: 7),
+                    width: size.width,
+                    height: size.height * 0.17,
+                    child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categories.length,
+                        itemBuilder: (ctx, index) {
+                          CategoriesModel current = categories[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PdfScreen(
+                                                  path: current.pdfUrl,
+                                                  marca: current.title,
+                                                )));
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundImage:
+                                        AssetImage(current.imageUrl),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: size.height * 0.008,
+                                ),
+                                Text(
+                                  current.title,
+                                  style: textTheme.bodySmall,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
                 ),
 
                 /// Body Slider
