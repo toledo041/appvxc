@@ -140,14 +140,6 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.04,
                     ),
-                    /*FadeInUp(
-                  delay: const Duration(milliseconds: 200),
-                  child: const Image(
-                    image: AssetImage("assets/images/empty.png"),
-                    fit: BoxFit.fill,
-                    height: size.height * 0.23,
-                  ),
-                ),*/
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.01,
                     ),

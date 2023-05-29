@@ -443,14 +443,8 @@ Future<List<PagoModel>> getPagosUsuarios() async {
         deuda: cart["deuda"] * 1.0,
         abono: cart["abono"] * 1.0,
         liquidada: cart["liquidada"],
-        correo: cart["email"]);
-    /*{
-      "deuda": cart["deuda"],
-      "liquidada": cart["liquidada"],
-      "name": cart["nombre"],
-      "abono": cart["abono"],
-      "correo": cart["correo"]
-    };*/
+        correo: cart["email"],
+        nombre: cart["name"]);
 
     res.add(pagoUsuario);
   }
