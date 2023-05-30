@@ -42,7 +42,7 @@ class _TarjetaPageState extends State<TarjetaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(" Dirección del usuario"),
+        title: const Text(" Número de tarjeta del usuario"),
       ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,

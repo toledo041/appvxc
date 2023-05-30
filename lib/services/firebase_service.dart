@@ -275,31 +275,34 @@ Future<List> getTarjetaUsuario(String correo) async {
 Future<List<VendedorModel>> getUsuariosVenta() async {
   List<VendedorModel> ventas = [];
   //el nombre de la colección debe ser el mismo que en nuestra base
-  CollectionReference collectionReferencePeople = db.collection("tipo_usuario");
+  CollectionReference collectionReferenceTipoUsuario =
+      db.collection("tipo_usuario");
 
   //el get se trae todo lo que hay en la colección falta filtrar
-  QuerySnapshot queryPeople = await collectionReferencePeople
-      .where("tipo_usuario")
+  QuerySnapshot queryTipoUsuario = await collectionReferenceTipoUsuario
       //.where("es_vendedor", isEqualTo: false)
       .get();
 
   //Se obtienen los usuarios que no son vendedores
-  Future.forEach(queryPeople.docs, (element) async {
+  for (var element in queryTipoUsuario.docs) {
     final Map<String, dynamic> data = element.data() as Map<String, dynamic>;
 
-    String correo = data["email"];
-    print("correo buscar ${correo}");
+    String correo = data["email"] ?? "";
+    print("correo buscar ${data}");
 
-    VendedorModel model = VendedorModel(
-        nombre: data["name"],
-        correo: correo,
-        deuda: 0,
-        abono: 0,
-        uid: element.id,
-        carrito: []);
+    if (correo.isNotEmpty) {
+      VendedorModel model = VendedorModel(
+          nombre: data["name"] ?? "",
+          correo: correo,
+          deuda: 0,
+          abono: 0,
+          uid: element.id,
+          carrito: [],
+          listaMarcas: []);
 
-    ventas.add(model);
-  });
+      ventas.add(model);
+    }
+  }
 
   return ventas;
 }
@@ -381,14 +384,16 @@ Future<List<ProductoModel>> getCatalogoProductos(String marca) async {
 //PAGOS
 //guardar información en la bd
 Future<void> addPagoUsuario(double deuda, bool liquidada, String nombre,
-    double abono, String correo) async {
+    double abono, String correo, String fecha, String nota) async {
   await db.collection("pagos_usuario").add({
     "deuda": deuda,
     "marca": "N/A",
     "liquidada": liquidada,
     "name": nombre,
     "abono": abono,
-    "email": correo
+    "email": correo,
+    "fecha": fecha,
+    "nota": nota
   });
 }
 
@@ -444,9 +449,16 @@ Future<List<PagoModel>> getPagosUsuarios() async {
         abono: cart["abono"] * 1.0,
         liquidada: cart["liquidada"],
         correo: cart["email"],
-        nombre: cart["name"]);
+        nombre: cart["name"],
+        uid: pago.id);
 
     res.add(pagoUsuario);
   }
   return res;
+}
+
+Future<void> updatePago(
+    String uid, double abono, String fecha, bool liquidada, String nota) async {
+  await db.collection('pagos_usuario').doc(uid).update(
+      {"abono": abono, "fecha": fecha, "liquidada": liquidada, "nota": nota});
 }

@@ -1,5 +1,3 @@
-//import 'dart:js_util';
-
 import 'package:bottom_bar_matu/components/colors.dart';
 import 'package:fashion_ecommerce_app/main_wrapper.dart';
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
@@ -77,6 +75,7 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
             listaElm.add(carrito);
             if (!marcas.contains(carrito["marca"])) {
               marcas += carrito["marca"] + " ";
+              usuario.listaMarcas.add(carrito["marca"]);
             }
           }
 
@@ -87,7 +86,7 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
         //Se calcula el envío y se suma a la deuda
         shipping = (deuda + (deuda == 0.0 ? 0.0 : 25.99)) * 0.09;
         shipping = double.parse((shipping).toStringAsFixed(2));
-        usuario.deuda = (deuda + shipping);
+        usuario.deuda = double.parse((deuda + shipping).toStringAsFixed(2));
         //ABONO
         for (var element in pagos) {
           //print("usuario ${usuario.correo} liquidado? ${element.correo}");
@@ -95,10 +94,15 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
             print("pago ${element}");
             usuario.liquidada = element.liquidada;
             double pagado = element.abono;
+            usuario.abono = pagado;
+            usuario.uid = element.uid;
             break;
           }
         }
-        print("usuario ${usuario.correo} liquidado? ${usuario.liquidada}");
+        usuario.porPagar =
+            double.parse((usuario.deuda - usuario.abono).toStringAsFixed(2));
+        print(
+            "usuario ${usuario.correo} liquidado? ${usuario.liquidada} abono ${usuario.abono}");
         usuario.marcas = marcas;
       }
 
@@ -196,7 +200,7 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
                                     subtitle:
                                         Text('Compro en: ${current.marcas}'),
                                     trailing: Text(
-                                      "\u0024 ${current.deuda}",
+                                      "\u0024 ${(current.porPagar)}",
                                       style: const TextStyle(
                                           color: Colors.blue,
                                           fontWeight: FontWeight.bold),
@@ -207,6 +211,9 @@ class _HomePageVendedorState extends State<HomePageVendedor> {
                                         MaterialPageRoute(
                                             builder: (context) => DetalleVenta(
                                                   modeloVendedor: current,
+                                                  onReturn: () {
+                                                    setState(() {});
+                                                  },
                                                 )),
                                       );
                                     },

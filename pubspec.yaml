@@ -31,6 +31,7 @@ dependencies:
   cell_calendar: ^0.8.0
   intl: ^0.18.1
   flutter_launcher_icons: ^0.13.1
+  toast: ^0.3.0
 
   
 
