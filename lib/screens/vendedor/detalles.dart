@@ -1,6 +1,6 @@
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
-import 'package:fashion_ecommerce_app/utils/constants.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fashion_ecommerce_app/screens/vendedor/agenda.dart';

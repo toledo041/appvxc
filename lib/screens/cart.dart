@@ -397,7 +397,9 @@ class _CartState extends State<Cart> {
                       FadeInUp(
                         delay: const Duration(milliseconds: 500),
                         child: ReuseableRowForCart(
-                          price: (calculateTotalPrice() + calculateShipping()),
+                          price: double.parse(
+                              (calculateTotalPrice() + calculateShipping())
+                                  .toStringAsFixed(2)),
                           text: 'Total',
                         ),
                       ),

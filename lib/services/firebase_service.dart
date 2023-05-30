@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fashion_ecommerce_app/model/vededor_model.dart';
-import 'package:fashion_ecommerce_app/screens/verificar_page.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 

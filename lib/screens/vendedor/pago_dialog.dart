@@ -1,4 +1,3 @@
-import 'package:advance_notification/advance_notification.dart';
 import 'package:fashion_ecommerce_app/services/firebase_service.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
